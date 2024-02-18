@@ -20,9 +20,6 @@ def get_time_difference(image_1, image_2):
      time_2 = get_time(image_2)
      time_difference = time_2 - time_1
      return time_difference.seconds
-        
-# (get_time_difference('photo_1754.jpg', 'photo_1755.jpg'))
-# (get_time_difference('photo_0683.jpg', 'photo_0684.jpg'))
 
 def convert_to_cv(image_1, image_2):
      image_1_cv = cv2.imread(image_1, 0)
@@ -30,26 +27,27 @@ def convert_to_cv(image_1, image_2):
      return image_1_cv, image_2_cv
     
     
-def calculate_features(image_1, image_2, feature_number):
+def calculate_features(image_1_cv, image_2_cv, feature_number):
     orb = cv2.ORB_create(nfeatures = feature_number)
     keypoints_1, descriptors_1 = orb.detectAndCompute(image_1_cv, None)
     keypoints_2, descriptors_2 = orb.detectAndCompute(image_2_cv, None)
     return keypoints_1, keypoints_2, descriptors_1, descriptors_2
     
-
 def calculate_matches(descriptors_1, descriptors_2):
     brute_force = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = brute_force.match(descriptors_1, descriptors_2)
     matches = sorted(matches, key=lambda x: x.distance)
-    return matches
-
-
-image_1 = 'photo_0683.jpg'
-image_2 = 'photo_0684.jpg'
+    clean_matches = []
+    for match in matches:
+        if match.distance < 30:
+            print(match.distance)
+            clean_matches.append(match)
+#     return matches
+    return clean_matches
 
 
 def display_matches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches):
-    match_img = cv2.drawMatches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches[:100], None)
+    match_img = cv2.drawMatches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches, None)
     resize = cv2.resize(match_img, (1600,600), interpolation = cv2.INTER_AREA)
     cv2.imshow('matches', resize)
     cv2.waitKey(0)
@@ -69,37 +67,53 @@ def find_matching_coordinates(keypoints_1, keypoints_2, matches):
     return coordinates_1, coordinates_2 
 
 
-def calculate_mean_distance(coordinates_1, coodinates_2):
+def calculate_mean_distance(coordinates_1, coordinates_2):
     all_distance = 0
+    all_distances = []
     merged_coordinates = list(zip(coordinates_1, coordinates_2))
     for coordinate in merged_coordinates:
         x_difference = coordinate[0][0] - coordinate[1][0]
         y_difference = coordinate[0][1] - coordinate[1][1]
         distance = math.hypot(x_difference, y_difference)
-        all_distance = all_distance + distance
-    return all_distance / len(merged_coordinates)
-    print(coordinates_1[0])
-    print(coordinates_2[0])
+#         logger.debug(f'Distance {distance} px')
+        print(distance)
+        all_distances.append(distance)
+    return sum(all_distances) / len(all_distances)
+
 def calculate_speed_in_kmps(feature_distance, GSD, time_difference):
     distance = feature_distance * GSD / 100000
     speed = distance / time_difference
     return speed
-# print(merged_coordinates[0])
-time_difference = get_time_difference(image_1, image_2) # Get time difference between images
 
-image_1_cv, image_2_cv = convert_to_cv(image_1, image_2) # Create OpenCV image objects
-keypoints_1, keypoints_2, descriptors_1, descriptors_2 = calculate_features(image_1_cv, image_2_cv, 1000) # Get keypoints and descriptors
-matches = calculate_matches(descriptors_1, descriptors_2) # Match descriptors
-try:
-    display_matches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches) # Display matches
-except:
-    pass
-coordinates_1, coordinates_2 = find_matching_coordinates(keypoints_1, keypoints_2, matches)
-print(coordinates_1[0], coordinates_2[0])
-average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
-logger.debug(f'Average feature distance {average_feature_distance} pixels')
-speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)   
-logger.info(f'Speed: {speed} km / second!')
-logger.info(f'Speed: {speed*60*60} km / hour!')
 
-logger.info("We Love SPACE!")
+def incredible_snake_sky_speedy(image_1, image_2):
+    # print(merged_coordinates[0])
+    time_difference = get_time_difference(image_1, image_2) # Get time difference between image
+    image_1_cv, image_2_cv = convert_to_cv(image_1, image_2) # Create OpenCV image objects
+    keypoints_1, keypoints_2, descriptors_1, descriptors_2 = calculate_features(image_1_cv, image_2_cv, 1000) # Get keypoints and descriptors
+    matches = calculate_matches(descriptors_1, descriptors_2) # Match descriptors
+    
+    try:
+        display_matches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches) # Display matches
+    except:
+        pass
+    coordinates_1, coordinates_2 = find_matching_coordinates(keypoints_1, keypoints_2, matches)
+#     print(coordinates_1[0], coordinates_2[0])
+    average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
+    logger.debug(f'Average feature distance {average_feature_distance} pixels')
+    speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)   
+    logger.info(f'Speed: {speed} km / second!')
+    logger.info(f'Speed: {speed*60*60} km / hour!')
+
+    logger.info("We Love SPACE!")
+    
+    return speed
+
+
+
+if __name__ == "__main__":
+    image_1 = 'run_0_gps_image_0.jpg'
+    image_2 = 'run_0_gps_image_1.jpg'
+    incredible_snake_sky_speedy(image_1, image_2)
+    
+
