@@ -4,6 +4,20 @@ from time import sleep
 from random import random
 import merliandrocam
 import ISS_speedy
+from datetime import datetime, timedelta
+from time import sleep
+
+# Create a variable to store the start and end time
+start_time = datetime.now()
+end_time = start_time + timedelta(minutes=10)
+
+# Create a variable to store the current time
+# (these will be almost the same at the start)
+now_time = datetime.now()
+
+# Create a variable to store the current time
+run_duration = timedelta(minutes=2)
+safety_duration = timedelta(minutes=1)
 
 logfile("spacelab.log")
 
@@ -39,13 +53,21 @@ def estimate_speed(run_number):
     pair_speeds = []
     for pair in pairs:
         logger.debug(f'Calculating speed for {pair[0]}, {pair[1]}')
-        speed = ISS_Speedy.incredible_snake_sky_speedy(pair[0], pair[1])
+        speed = ISS_speedy.incredible_snake_sky_speedy(pair[0], pair[1])
         print(speed)
         pair_speeds.append(speed)
     return sum(pair_speeds) / len(pair_speeds)
 
 estimates = []
+
+# 6 runs * 7 images = 42 images (could be less if run duration is long)
 for i in range(6):
+    now_time = datetime.now()
+    safe_run_start = end_time - run_duration - safety_duration
+    logger.info(f"Now time: {now_time}, Safe Run Start: {safe_run_start}")
+    if (now_time > end_time - run_duration - safety_duration):
+        logger.warning("breaking, there's not enough time for another run")
+        break
     logger.info(f"Loop number {i+1} started")
     # come up with next estimate
     new_estimate = estimate_speed(i)
@@ -59,7 +81,11 @@ for i in range(6):
         average_estimate = sum(estimates)/len(estimates)
         write_result(average_estimate)
     else:
-        logger.error("Ne estimates calculated")
+        logger.error("No estimates calculated")
         write_result(0)
+    
+    run_end = datetime.now()
+    run_duration = (run_end - start_time) / (i+1)
+    logger.info(f'run duration: {run_duration}')
 
     
