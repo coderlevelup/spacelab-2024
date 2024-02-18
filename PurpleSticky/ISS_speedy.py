@@ -99,7 +99,9 @@ print(coordinates_1[0], coordinates_2[0])
 average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
 logger.debug(f'Average feature distance {average_feature_distance} pixels')
 speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)   
+ratio = (6371+400)/6371
+speed = speed * ratio  
 logger.info(f'Speed: {speed} km / second!')
 logger.info(f'Speed: {speed*60*60} km / hour!')
 
-logger.info("We Love SPACE!")
+logger.info("We Love SPACE!")     
