@@ -93,10 +93,10 @@ def incredible_snake_sky_speedy(image_1, image_2):
     keypoints_1, keypoints_2, descriptors_1, descriptors_2 = calculate_features(image_1_cv, image_2_cv, 1000) # Get keypoints and descriptors
     matches = calculate_matches(descriptors_1, descriptors_2) # Match descriptors
     
-    try:
-        display_matches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches) # Display matches
-    except:
-        pass
+#     try:
+#         display_matches(image_1_cv, keypoints_1, image_2_cv, keypoints_2, matches) # Display matches
+#     except:
+#         pass
     coordinates_1, coordinates_2 = find_matching_coordinates(keypoints_1, keypoints_2, matches)
 #     print(coordinates_1[0], coordinates_2[0])
     average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
