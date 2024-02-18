@@ -40,7 +40,7 @@ def calculate_matches(descriptors_1, descriptors_2):
     clean_matches = []
     for match in matches:
         if match.distance < 30:
-            print(match.distance)
+#             print(match.distance)
             clean_matches.append(match)
 #     return matches
     return clean_matches
@@ -76,7 +76,7 @@ def calculate_mean_distance(coordinates_1, coordinates_2):
         y_difference = coordinate[0][1] - coordinate[1][1]
         distance = math.hypot(x_difference, y_difference)
 #         logger.debug(f'Distance {distance} px')
-        print(distance)
+#         print(distance)
         all_distances.append(distance)
     return sum(all_distances) / len(all_distances)
 
@@ -84,6 +84,8 @@ def calculate_speed_in_kmps(feature_distance, GSD, time_difference):
     distance = feature_distance * GSD / 100000
     speed = distance / time_difference
     return speed
+
+
 def incredible_snake_sky_speedy(image_1, image_2):
     # print(merged_coordinates[0])
     time_difference = get_time_difference(image_1, image_2) # Get time difference between image
@@ -100,8 +102,6 @@ def incredible_snake_sky_speedy(image_1, image_2):
     average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
     logger.debug(f'Average feature distance {average_feature_distance} pixels')
     speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)   
-    ratio = (6371+400)/6371
-    speed = speed * ratio  
     logger.info(f'Speed: {speed} km / second!')
     logger.info(f'Speed: {speed*60*60} km / hour!')
 
@@ -115,3 +115,5 @@ if __name__ == "__main__":
     image_1 = 'run_0_gps_image_0.jpg'
     image_2 = 'run_0_gps_image_1.jpg'
     incredible_snake_sky_speedy(image_1, image_2)
+    
+
