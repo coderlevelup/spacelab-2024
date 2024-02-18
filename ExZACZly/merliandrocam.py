@@ -50,6 +50,9 @@ def capture_images(run_number, image_count):
         sleep(1)
     return image_names
 
+def close_camera():
+    cam.close()
+
 # if __name__ == "__main__":
 #     print(capture_images(3))
     

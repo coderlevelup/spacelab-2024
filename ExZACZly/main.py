@@ -12,7 +12,6 @@ start_time = datetime.now()
 end_time = start_time + timedelta(minutes=10)
 
 # Create a variable to store the current time
-# (these will be almost the same at the start)
 now_time = datetime.now()
 
 # Create a variable to store the current time
@@ -20,7 +19,6 @@ run_duration = timedelta(minutes=2)
 safety_duration = timedelta(minutes=1)
 
 logfile("spacelab.log")
-
 def write_result(result):
     # Format the estimate_kmps to have a precision
     # of 5 significant figures
@@ -42,6 +40,7 @@ def write_result(result):
         logger.error("Error opening file")
         
 
+
 def estimate_speed(run_number):
     photos = merliandrocam.capture_images(run_number, 7)
     if not photos:
@@ -54,12 +53,11 @@ def estimate_speed(run_number):
     for pair in pairs:
         logger.debug(f'Calculating speed for {pair[0]}, {pair[1]}')
         speed = ISS_speedy.incredible_snake_sky_speedy(pair[0], pair[1])
-        print(speed)
+#         print(speed)
         pair_speeds.append(speed)
     return sum(pair_speeds) / len(pair_speeds)
 
 estimates = []
-
 # 6 runs * 7 images = 42 images (could be less if run duration is long)
 for i in range(6):
     now_time = datetime.now()
@@ -88,4 +86,5 @@ for i in range(6):
     run_duration = (run_end - start_time) / (i+1)
     logger.info(f'run duration: {run_duration}')
 
-    
+merliandrocam.close_camera()
+logger.info("Done :)")
