@@ -101,7 +101,14 @@ def incredible_snake_sky_speedy(image_1, image_2):
 #     print(coordinates_1[0], coordinates_2[0])
     average_feature_distance = calculate_mean_distance(coordinates_1, coordinates_2)
     logger.debug(f'Average feature distance {average_feature_distance} pixels')
-    speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)   
+    speed = calculate_speed_in_kmps(average_feature_distance, 12648, time_difference)
+    
+    # correct for the fact that the ISS is in space, gsd ison earth!
+    earth_radius = 6371
+    iss_height = 400
+    ratio = (earth_radius + iss_height)/earth_radius
+    speed = speed * ratio  
+    
     logger.info(f'Speed: {speed} km / second!')
     logger.info(f'Speed: {speed*60*60} km / hour!')
 
