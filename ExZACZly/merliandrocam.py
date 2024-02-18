@@ -2,6 +2,8 @@ from orbit import ISS
 from picamera import PiCamera
 cam = PiCamera()
 cam.resolution = (4056,3040)
+from logzero import logger, logfile
+logfile("spacelab.log")
 
 
 def convert(angle):
@@ -33,17 +35,20 @@ def custom_capture(iss, camera, image):
     # Capture the image
     camera.capture(image)
 
-def capture_images(image_count):
+def capture_images(run_number, image_count):
     image_names = []
     for x in range(image_count):
-        image_name = f'new_gps_image_{x}.jpg'
+        image_name = f'run_{run_number}_gps_image_{x}.jpg'
         try:
             custom_capture(ISS(), cam, image_name)
             image_names.append(image_name)
+            logger.info(f'{image_name} written.')
         except Exception as e:
-            print('There was an error: ', e)
+            logger.error('There was an error: ', e)
             pass # don't break, just try for another file
     return image_names
 
 if __name__ == "__main__":
     print(capture_images(3))
+    
+    

@@ -2,6 +2,7 @@ estimate_kmps = 3.1415926  # pi for debug
 from logzero import logger, logfile
 from time import sleep
 from random import random
+import merliandrocam
 
 logfile("spacelab.log")
 
@@ -26,18 +27,19 @@ def write_result(result):
         logger.error("Error opening file")
         
 
-def estimate_speed():
+def estimate_speed(run_number):
+    merliandrocam.capture_images(run_number, 7)
     return 7 + random()
 
 estimates = []
-for i in range(100):
+for i in range(6):
     logger.info(f"Loop number {i+1} started")
     # come up with next estimate
-    new_estimate = estimate_speed()
-    logger.info(f"Estimate {new_estimate}")
+    new_estimate = estimate_speed(i)
+    logger.info(f"Estimate {i+1}: {new_estimate}")
     estimates.append(new_estimate)
     average_estimate = sum(estimates)/len(estimates)
     # write every time we have a new estimate in case program crashes
     write_result(average_estimate)
-    sleep(0.1)
+    sleep(1)
     
