@@ -1,3 +1,4 @@
+from time import sleep
 from orbit import ISS
 from picamera import PiCamera
 cam = PiCamera()
@@ -46,6 +47,7 @@ def capture_images(run_number, image_count):
         except Exception as e:
             logger.error('There was an error: ', e)
             pass # don't break, just try for another file
+        sleep(1)
     return image_names
 
 if __name__ == "__main__":
