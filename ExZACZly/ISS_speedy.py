@@ -5,7 +5,7 @@ import math
 import logzero
 from logzero import logger
 
-logzero.logfile("space.log")
+logzero.logfile("spacelab.log")
 
 def get_time(image):
     with open(image, 'rb') as image_file:
@@ -118,9 +118,9 @@ def incredible_snake_sky_speedy(image_1, image_2):
 
 
 
-if __name__ == "__main__":
-    image_1 = 'run_0_gps_image_0.jpg'
-    image_2 = 'run_0_gps_image_1.jpg'
-    incredible_snake_sky_speedy(image_1, image_2)
-    
+# if __name__ == "__main__":
+#     image_1 = 'run_0_gps_image_0.jpg'
+#     image_2 = 'run_0_gps_image_1.jpg'
+#     incredible_snake_sky_speedy(image_1, image_2)
+#     
 

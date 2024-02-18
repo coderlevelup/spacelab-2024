@@ -7,3 +7,4 @@ play/result.txt
 play/spacelab.log
 PurpleSticky/space.log
 *.log
+*.pyc
